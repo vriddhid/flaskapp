@@ -21,11 +21,13 @@ jobs:
       - name: Install Flask
         run: pip install flask
 
-      - name: Build static pages
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Copy static files
         run: |
-          flask build
           mkdir -p public
-          cp -r build/* public/
+          cp -r static/* public/
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
