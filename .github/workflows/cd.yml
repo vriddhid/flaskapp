@@ -20,18 +20,10 @@ jobs:
 
       - name: Install dependencies
         run: pip install -r requirements.txt
-
-      - name: Deploy to Render
-        run: |
-          curl -X POST https://api.render.com/v1/render/deployments \
-            -H "Authorization: Bearer ${{ secrets.RENDER_TOKEN }}" \
-            -d '{
-              "branch": "master",
-              "buildCommand": "pip install -r requirements.txt && render run python app.py",
-              "directory": "/",
-              "environment": {
-                "PYTHON_VERSION": "3.8"
-              }
-            }'
-        env:
-          RENDER_TOKEN: ${{ secrets.RENDER_TOKEN }}
+        # Heavily modified deploy job to fit render.com
+      - name: Deploy to production
+        uses: johnbeynon/render-deploy-action@v0.0.8
+        with:
+          service-id: ${{ secrets.SERVICE_ID }} # Can be found as part of the Deploy Hook
+          api-key: ${{ secrets.RENDER_API_KEY }} # Create your API key in Render Dashboard > Account Settings
+      
