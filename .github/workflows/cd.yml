@@ -16,20 +16,9 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: 3.8
-
-      - name: Install Heroku CLI
-        run: curl https://cli-assets.heroku.com/install.sh | sh
-
-      - name: Set up Heroku CLI
-        env:
-          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-        run: |
-          echo "machine api.heroku.com" >> ~/.netrc
-          echo "  login $HEROKU_API_KEY" >> ~/.netrc
-          echo "machine git.heroku.com" >> ~/.netrc
-          echo "  login $HEROKU_API_KEY" >> ~/.netrc
-          heroku update
       - name: Deploy to Heroku
         run: |
           heroku create
           git push heroku master
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
