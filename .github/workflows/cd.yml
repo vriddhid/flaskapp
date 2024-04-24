@@ -26,4 +26,4 @@ jobs:
       - name: Deploy to Heroku
         run: |
           heroku create
-          git push heroku main
+          git push heroku master
