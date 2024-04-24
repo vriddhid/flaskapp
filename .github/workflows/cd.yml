@@ -18,23 +18,20 @@ jobs:
         with:
           python-version: 3.8
 
-      - name: Install Flask
-        run: pip install flask
-
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Copy static files
+      - name: Deploy to Render
         run: |
-          mkdir -p public
-          cp -r static/* public/
-
-      - name: Push to GitHub Pages
-        run: |
-          git config --global user.email "actions@github.com"
-          git config --global user.name "GitHub Actions"
-          git add public
-          git commit -m "Update static files"
-          git push https://github.com/${{ github.repository }}.git HEAD:gh-pages
+          curl -X POST https://api.render.com/v1/render/deployments \
+            -H "Authorization: Bearer ${{ secrets.RENDER_TOKEN }}" \
+            -d '{
+              "branch": "master",
+              "buildCommand": "pip install -r requirements.txt && render run python app.py",
+              "directory": "/",
+              "environment": {
+                "PYTHON_VERSION": "3.8"
+              }
+            }'
         env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          RENDER_TOKEN: ${{ secrets.RENDER_TOKEN }}
